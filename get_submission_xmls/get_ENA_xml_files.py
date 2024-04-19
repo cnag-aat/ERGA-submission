@@ -92,7 +92,7 @@ def get_studies (project, center, cname, tolid, species, sample_coordinator, stu
         )        
     elif study_type == "resequencing Data":
         alias = cname.replace(' ', '_') + '_resequencing_data'
-        study_register[tolid] = alias
+        study_register[tolid_pref] = alias
         description = "This project collects the " + study_type + " generated for " + species +\
                          " (common name " + cname + ")" 
     else:
@@ -102,7 +102,6 @@ def get_studies (project, center, cname, tolid, species, sample_coordinator, stu
             cname = cname,
             data = study_type
         )
-        tolid_pref = re.sub(r'[0-9]', '', tolid)
         study_name = tolid_pref
         if project == "ERGA-pilot":
             description_template = "pilot_data_description.txt"       
@@ -117,7 +116,7 @@ def get_studies (project, center, cname, tolid, species, sample_coordinator, stu
             description_template = "bge_data_description.txt"               
         else:
             description_template = "other_data_description.txt" 
-        study_register[tolid] = alias
+        study_register[tolid_pref] = alias
         description = env.get_template(description_template).render(
             species = species,
             cname = cname,
@@ -308,7 +307,6 @@ if __name__ == "__main__":
         root["exp"].appendChild(exp_xml)
     experiment_register = {}
 
-
     if 'all' in args.xml or "runs" in args.xml:
         root["runs"] = minidom.Document()
         runs_xml = root["runs"].createElement('RUN_SET') 
@@ -330,13 +328,13 @@ if __name__ == "__main__":
             exit ("Missing tolid or tolid prefix, compulsory argument")
         else:
             tolid = in_file["tolid"][i]
+            tolid_pref = re.sub(r'[0-9]', '', tolid)
 
         cname = ""
         if "common_name" in in_file and not pd.isna(in_file["common_name"][i]) and not in_file["common_name"][i] == "-":
             cname = in_file["common_name"][i]  
         elif "common_names" in in_file and not pd.isna(in_file["common_names"][i]) and not in_file["common_names"][i] == "-":
             cname = in_file["common_names"][i] 
-
 
         sample_coordinator = ""
         if "sample_coordinator" not in in_file or pd.isna(in_file["sample_coordinator"][i]) or in_file["sample_coordinator"][i] == "-":
@@ -382,7 +380,7 @@ if __name__ == "__main__":
             if "read_type" not in in_file or pd.isna(in_file["read_type"][i]) or in_file["read_type"][i] == "-":
                 if library_strategy == "Hi-C":
                     read_type = library_strategy
-                elif "Illumina" in instrument:
+                elif "illumina" in instrument.lower():
                     read_type = "Illumina"
                 elif "ION" in instrument:
                     read_type = "ONT"
@@ -403,26 +401,26 @@ if __name__ == "__main__":
             if args.project == "ERGA-BGE":
                 aim = "assembly and annotation"    
              
-        
         study_type = {}
-        study_type[tolid] = []
+        if read_type == "ONT" or read_type == "Hifi":
+          study_type[tolid] = []
 
-        if aim.lower() == "assembly":
+          if aim.lower() == "assembly":
             study_type[tolid].append("genomic data")
             study_type[tolid].append("genome assembly")
-        elif aim.lower() == "annotation":
+          elif aim.lower() == "annotation":
             study_type[tolid].append("transcriptomic data")
-        elif aim.lower() == "assembly and annotation":
+          elif aim.lower() == "assembly and annotation":
             study_type[tolid].append("genomic and transcriptomic data")
             study_type[tolid].append("genome assembly")
-        elif aim.lower() == "resequencing":
+          elif aim.lower() == "resequencing":
             study_type[tolid].append("resequencing data")
-        else:
+          else:
             exit(aim + " is not and accepted aim for the project.")
         
-        alternate = ""
-        alternate_annot = "no"
-        if "alternate" in in_file:
+          alternate = ""
+          alternate_annot = "no"
+          if "alternate" in in_file:
             alternate = in_file["alternate"][i] 
             if "assembly" in alternate.lower():
                 study_type[tolid].append("alternate assembly")
@@ -430,11 +428,11 @@ if __name__ == "__main__":
                 alternate_annot = "yes"
 
         if read_type == library_strategy:
-            rname = tolid + "_" + read_type + "_" + sample_id
-            experiments[rname] = "exp_" + tolid + "_" + library_strategy + "_" + sample_id
+            rname = tolid_pref + "_" + read_type + "_" + sample_id
+            experiments[rname] = "exp_" + tolid_pref + "_" + library_strategy + "_" + sample_id
         else:
-            rname = tolid + "_" + read_type + "_" + library_strategy + "_" + sample_id
-            experiments[rname] = "exp_" + tolid + "_" + read_type + "_" + library_strategy + "_" + sample_id
+            rname = tolid_pref + "_" + read_type + "_" + library_strategy + "_" + sample_id
+            experiments[rname] = "exp_" + tolid_pref + "_" + read_type + "_" + library_strategy + "_" + sample_id
        
 
         forward_file_name = ""
@@ -495,8 +493,9 @@ if __name__ == "__main__":
             add_exp = experiment_attributes.replace('{','').replace('}','')
  
         if 'all' in args.xml or "study" in args.xml:
-            if tolid not in study_register:
-                study_register[tolid] = ""
+          if read_type == "ONT" or read_type == "Hifi":
+            if tolid_pref not in study_register:
+                study_register[tolid_pref] = ""
                 for type in study_type[tolid]:
                     get_studies(
                         args.project,
@@ -511,10 +510,10 @@ if __name__ == "__main__":
                     )
 
         if 'all' in args.xml or "experiment" in args.xml:
-            if "exp_" + tolid + "_" + read_type + "_" + library_strategy + "_" + sample_id not in experiment_register and "exp_" + tolid + "_" + library_strategy + "_" + sample_id not in experiment_register:
-                experiment_register["exp_" + tolid + "_" + read_type + "_" + library_strategy + "_" + sample_id] = ""
+            if "exp_" + tolid_pref + "_" + read_type + "_" + library_strategy + "_" + sample_id not in experiment_register and "exp_" + tolid_pref + "_" + library_strategy + "_" + sample_id not in experiment_register:
+                experiment_register["exp_" + tolid_pref + "_" + read_type + "_" + library_strategy + "_" + sample_id] = ""
                 if read_type == library_strategy:
-                    experiment_register["exp_" + tolid + "_" + library_strategy + "_" + sample_id] = ""
+                    experiment_register["exp_" + tolid_pref + "_" + library_strategy + "_" + sample_id] = ""
                
                 get_experiments(
                     center,
@@ -522,7 +521,7 @@ if __name__ == "__main__":
                     species,
                     read_type,
                     instrument,
-                    study_register[tolid],
+                    study_register[tolid_pref],
                     sample_ref,
                     sample_id,
                     library_strategy, 
