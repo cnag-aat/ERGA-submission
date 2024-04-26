@@ -402,30 +402,30 @@ if __name__ == "__main__":
                 aim = "assembly and annotation"    
              
         study_type = {}
-        if read_type == "ONT" or read_type == "Hifi":
-          study_type[tolid] = []
+        #if read_type == "ONT" or read_type == "Hifi":
+        study_type[tolid] = []
 
-          if aim.lower() == "assembly":
+        if aim.lower() == "assembly":
             study_type[tolid].append("genomic data")
             study_type[tolid].append("genome assembly")
-          elif aim.lower() == "annotation":
+        elif aim.lower() == "annotation":
             study_type[tolid].append("transcriptomic data")
-          elif aim.lower() == "assembly and annotation":
+        elif aim.lower() == "assembly and annotation":
             study_type[tolid].append("genomic and transcriptomic data")
             study_type[tolid].append("genome assembly")
-          elif aim.lower() == "resequencing":
+        elif aim.lower() == "resequencing":
             study_type[tolid].append("resequencing data")
-          else:
+        else:
             exit(aim + " is not and accepted aim for the project.")
         
-          alternate = ""
-          alternate_annot = "no"
-          if "alternate" in in_file:
-            alternate = in_file["alternate"][i] 
-            if "assembly" in alternate.lower():
-                study_type[tolid].append("alternate assembly")
-            if "annotation" in alternate.lower():
-                alternate_annot = "yes"
+        alternate = ""
+        alternate_annot = "no"
+        if "alternate" in in_file:
+          alternate = in_file["alternate"][i] 
+          if "assembly" in alternate.lower():
+              study_type[tolid].append("alternate assembly")
+          if "annotation" in alternate.lower():
+              alternate_annot = "yes"
 
         if read_type == library_strategy:
             rname = tolid_pref + "_" + read_type + "_" + sample_id
@@ -493,7 +493,7 @@ if __name__ == "__main__":
             add_exp = experiment_attributes.replace('{','').replace('}','')
  
         if 'all' in args.xml or "study" in args.xml:
-          if read_type == "ONT" or read_type == "Hifi":
+         # if read_type == "ONT" or read_type == "Hifi":
             if tolid_pref not in study_register:
                 study_register[tolid_pref] = ""
                 for type in study_type[tolid]:
