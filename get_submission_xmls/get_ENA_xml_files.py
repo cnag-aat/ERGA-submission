@@ -482,14 +482,14 @@ if __name__ == "__main__":
 
         add_lib = {}
         library_attributes = ""
-        if "library_attributes" in in_file and not pd.isna(in_file["library_attributes"][i]) and not in_file["library_attributes"][i] == "-":
-            library_attributes = in_file["library_attributes"][i] 
+        if "lib_attr" in in_file and not pd.isna(in_file["lib_attr"][i]) and not in_file["lib_attr"][i] == "-":
+            library_attributes = in_file["lib_attr"][i] 
             add_lib = library_attributes.replace('{','').replace('}','')
 
         add_exp = {}
         experiment_attributes = ""
-        if "experiment_attributes" in in_file and not pd.isna(in_file["experiment_attributes"][i]) and not in_file["experiment_attributes"][i] == "-":
-            experiment_attributes = in_file["experiment_attributes"][i] 
+        if "exp_attr" in in_file and not pd.isna(in_file["exp_attr"][i]) and not in_file["exp_attr"][i] == "-":
+            experiment_attributes = in_file["exp_attr"][i] 
             add_exp = experiment_attributes.replace('{','').replace('}','')
  
         if 'all' in args.xml or "study" in args.xml:
