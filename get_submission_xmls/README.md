@@ -1,6 +1,6 @@
 **README**
 
-The scripts get_ENA_xml_files.py and get_umbrella_xml.py work with python3, the only additional requirement is the module JINJA2. 
+The scripts get_ENA_xml_files.py and get_umbrella_xml.py work with python3, the only additional requirements are the modules JINJA2 and pandas. 
 
 **USAGE**
 
