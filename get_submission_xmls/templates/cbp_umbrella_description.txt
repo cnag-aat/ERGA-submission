@@ -1,0 +1,1 @@
+This project collects the sequencing data and assemblies generated for {{species}}. The assembly is provided by the Catalan Initiative for the Earth Biogenome Project (https://www.biogenoma.cat/).

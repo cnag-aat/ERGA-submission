@@ -100,6 +100,7 @@ if __name__ == "__main__":
         sample_ambassador = args.sample_ambassador
     elif args.project == "CBP":
       description_template = "cbp_umbrella_description.txt"
+      alias = "cbp-" + tolid_pref + "-study-umbrella-" + datetime.now().strftime('%Y-%m-%d')
     elif args.project == "ERGA-BGE":
       alias = "erga-bge-" + tolid_pref + "-study-umbrella-" + datetime.now().strftime('%Y-%m-%d')
       description_template = "bge_umbrella_description.txt"          
