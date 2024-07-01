@@ -5,14 +5,6 @@ information currently there corrsponds to the qqGluDors example, so
 you\'ll need to replace the different fields with the correct
 information for your genome.
 
- 
-
-![AAT aat-data-management Posts Files v Notes + New v Upload v Edit in
-grid view e Share C.-ö Copy link Sync Modified By Jessica Gomez Garric
-Tyler Scott Alioto All Docum aat-data-management O Name 00 e -Checklist
-ENA-virtual sa\... ErebiaPalaricaSampleTabve.1sv Modified 4 minutes
-ago + Add column ](./media/image1.png)
-
 Once you have completed the tsv file, you need to login in the Webin
 page and do the submission of the tsv file as shown in the following
 Screen Captions:
