@@ -1,0 +1,4 @@
+Checklist	ERC000011	ENA default sample checklist
+tax_id	scientific_name	sample_alias	sample_title	sample_description	collection date	geographic location (country and/or sea)	composed of
+#units	 	 	 	 	 	 	 
+62148	Gluvia dorsalis	qqGluDors_RNA_pool	qqGluDors RNA pool	This sample is a RNA pool of multiple samples. It is composed of samples SAMEA114558557 and SAMEA114558561	2023-08-01	Spain	SAMEA114558557,SAMEA114558561
