@@ -1,6 +1,6 @@
 If the RNA/DNA has been pooled before sequencing, you need to create a
 virtual sample composed of all the different samples that were pooled.
-For this, you need to edit the **Checklist_ENA-virtual_sample.tsv** file. The
+For this, you need to edit the [**Checklist_ENA-virtual_sample.tsv**](https://github.com/ERGA-consortium/ERGA-submission/blob/main/virtual_samples/Checklist_ENA-virtual_sample.tsv) file. The
 information currently there corrsponds to the qqGluDors example, so
 you\'ll need to replace the different fields with the correct
 information for your genome.
