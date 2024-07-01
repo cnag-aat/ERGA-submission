@@ -11,8 +11,7 @@ information for your genome.
 grid view e Share C.-ö Copy link Sync Modified By Jessica Gomez Garric
 Tyler Scott Alioto All Docum aat-data-management O Name 00 e -Checklist
 ENA-virtual sa\... ErebiaPalaricaSampleTabve.1sv Modified 4 minutes
-ago + Add column ](./media/image1.png){width="6.268055555555556in"
-height="2.86875in"}
+ago + Add column ](./media/image1.png)
 
 Once you have completed the tsv file, you need to login in the Webin
 page and do the submission of the tsv file as shown in the following
@@ -39,8 +38,7 @@ Biosample. Please provide your Webin credentials Webin-1543 Login
 Register Forgot Password ? EMBL-EBI is the home for big data in biology.
 We help scientists exploit complex information to make discoveries that
 benefit humankind. SERVICES RESEARCH TRAINING INDUSTRY Manage Account g
-ABOUT ](./media/image2.png){width="6.268055555555556in"
-height="3.1326388888888888in"}
+ABOUT ](./media/image2.png)
 
  
 
@@ -56,8 +54,7 @@ managed in our Data Release FAQ. A dedicated submission API for COVID-19
 genomes is available here. Data ANALYSIS EXPERIMENT Register Samples
 Register Novel Taxonomy Submit XMLs (advanced) RUN SAMPLE Biomaterial
 Samples Register Study Studies (Projects) Studies Report Samples Report
-Submit XMLs (advanced) ](./media/image3.png){width="6.268055555555556in"
-height="2.5430555555555556in"}
+Submit XMLs (advanced) ](./media/image3.png)
 
  
 
@@ -76,8 +73,7 @@ spreadsheet as Text (Tab delimited). To do this please see these
 instructions. CNAG Submit Completed Spreadsheet Mngün archivo
 seleccionado EMBL-EBI is the home for big data in biology. We help
 scientists exploit complex information to
-](./media/image4.png){width="6.268055555555556in"
-height="2.0131944444444443in"}
+](./media/image4.png)
 
  
 
@@ -100,7 +96,6 @@ for big data in biology. We make discoveries that benefit humankind.
 This website requires cookies, and the limited processing of your
 personal data in order to function. By using the site oft Excel (or
 equivalent) please save the spreadsheet I agree, dismiss this banner
-](./media/image5.png){width="6.268055555555556in"
-height="3.035416666666667in"}
+](./media/image5.png)
 
  
