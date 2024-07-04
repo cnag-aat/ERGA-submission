@@ -15,6 +15,10 @@ import pandas as pd
 #Contact email: jessica.gomez@cnag.eu
 #Date:20230602
 
+#Modified by: Tyler Alioto, CNAG
+#Contact email: tyler.alioto@cnag.eu
+#Date: 20240704
+
 script_loc = os.path.dirname(sys.argv[0])
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(script_loc + "/templates/"))
 
@@ -63,6 +67,9 @@ def get_xml (project, center, species, tolid_pref, description, children):
     for key in children:
       seqp = get_attributes (root,attributes, attributes,'RELATED_PROJECT')
       accessions = get_attributes (root,seqp,seqp, 'CHILD_PROJECT', **{'accession':key})
+    if args.project == "ERGA-BGE":
+      seqp = get_attributes (root,attributes, attributes,'RELATED_PROJECT')
+      accessions = get_attributes (root,seqp,seqp, 'PARENT_PROJECT', **{'accession':'PRJEB61747'})
    
   if args.project == "CBP" or project == "EASI" or project == "ERGA-BGE":
     keyword = {}
