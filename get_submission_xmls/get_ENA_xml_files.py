@@ -513,7 +513,7 @@ if __name__ == "__main__":
                     )
 
         if 'all' in args.xml or "experiment" in args.xml:
-            if "exp_" + tolid_pref + "_" + read_type + "_" + library_strategy + "_" + sample_id not in experiment_register and "exp_" + tolid_pref + "_" + library_strategy + "_" + sample_id + "_" + library_id not in experiment_register:
+            if "exp_" + tolid_pref + "_" + read_type + "_" + library_strategy + "_" + sample_id + "_" + library_id not in experiment_register and "exp_" + tolid_pref + "_" + library_strategy + "_" + sample_id + "_" + library_id not in experiment_register:
                 experiment_register["exp_" + tolid_pref + "_" + read_type + "_" + library_strategy + "_" + sample_id + "_" + library_id] = ""
                 if read_type == library_strategy:
                     experiment_register["exp_" + tolid_pref + "_" + library_strategy + "_" + sample_id + "_" + library_id] = ""
