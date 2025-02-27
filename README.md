@@ -6,4 +6,4 @@ A collection of scripts developed by members of the ERGA Community in order to f
 Contains a guide for members of the BGE project with creating Studies and other relevent objects in ENA, followed by the submission of sequencing data and genome assemblies.
 
 ## get_submission_xmls
-Contains python scripts to create the xml files required for submission of a sequencing project to ENA
+Contains python and bash scripts to create the xml files required for submission of a sequencing project to ENA

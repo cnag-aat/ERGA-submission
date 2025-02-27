@@ -200,7 +200,12 @@ def get_exp_xml (center, alias, exp_title, study_alias, sample_ref, lib_name, li
 
     attributes = ""
     attributes = get_attributes (root["exp"],experiments, attributes, 'TITLE', **{exp_title:""})
-    attributes = get_attributes (root["exp"],experiments, attributes,  'STUDY_REF', **{'refname': study_alias})
+    if args.accession: 
+        attributes = get_attributes (root["exp"],experiments, attributes,  'STUDY_REF', **{'accession': args.accession})
+    elif study_alias == "":
+        exit("Please provide the data study accession number if you do not want to register it.")
+    else:
+        attributes = get_attributes (root["exp"],experiments, attributes,  'STUDY_REF', **{'refname': study_alias})
     attributes = get_attributes (root["exp"],experiments, attributes, 'DESIGN')
 
     design=""
@@ -276,6 +281,8 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--project", default = 'ERGA-BGE', choices=['ERGA-BGE', 'CBP', 'ERGA-pilot', 'EASI', 'other'], help="project")
     parser.add_argument("-x", "--xml", default= 'all', nargs = "+", choices=['all', 'study', 'experiment', 'runs'], help="specify which xml files do you want")
     parser.add_argument("-o", "--out_prefix", required=True, help="prefix to add to output files")   
+    parser.add_argument("-a", "--accession", required=False, help="project accession number, if already existing")
+    
     args = parser.parse_args()
 
     read_type_choice = ['ONT', 'Illumina', 'Hi-C', 'Hifi']
@@ -517,14 +524,13 @@ if __name__ == "__main__":
                 experiment_register["exp_" + tolid_pref + "_" + read_type + "_" + library_strategy + "_" + sample_id + "_" + library_id] = ""
                 if read_type == library_strategy:
                     experiment_register["exp_" + tolid_pref + "_" + library_strategy + "_" + sample_id + "_" + library_id] = ""
-               
                 get_experiments(
                     center,
                     experiments[rname],
                     species,
                     read_type,
                     instrument,
-                    study_register[tolid_pref],
+                    study_register[tolid_pref] if tolid_pref in study_register else "",
                     sample_ref,
                     sample_id,
                     library_strategy, 
