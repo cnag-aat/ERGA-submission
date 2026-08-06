@@ -44,10 +44,7 @@ options:
 ```
     ./get_submission_xmls
 
-usage: get_ENA_xml_files.py [-h] -f FILES
-                            [-p {ERGA-BGE,CBP,ERGA-pilot,EASI,other}]
-                            [-x {all,study,experiment,runs} [{all,study,experiment,runs} ...]]
-                            -o OUT_PREFIX [-a ACCESSION]
+usage: get_ENA_xml_files.py [-h] -f FILES [-p {ERGA-BGE,CBP,ERGA-pilot,EASI,other}] [-x {all,study,experiment,runs} [{all,study,experiment,runs} ...]] -o OUT_PREFIX [-a ACCESSION] [-s {all,data,assembly} [{all,data,assembly} ...]]
 
 options:
   -h, --help            show this help message and exit
@@ -60,6 +57,10 @@ options:
   -o OUT_PREFIX, --out_prefix OUT_PREFIX
                         prefix to add to output files
   -a ACCESSION, --accession ACCESSION
+                        project accession number, if already existing
+  -s {all,data,assembly} [{all,data,assembly} ...], --study_sub {all,data,assembly} [{all,data,assembly} ...]
+                        specify which studies you need to create
+
 
 ```
 
