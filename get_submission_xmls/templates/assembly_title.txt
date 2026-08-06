@@ -1,1 +1,1 @@
- {{species}} ({{cname}}), genome assembly, {{tolid}}. 
+ {{species}}, genome assembly, {{tolid}}. 

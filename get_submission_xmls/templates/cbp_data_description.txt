@@ -1,1 +1,1 @@
-This project collects the {{data}} generated for {{species}}, {{cname}}, to facilitate genome {{use}} as part of the Catalan Initiative for the Earth Biogenome Project (https://www.biogenoma.cat/).
+This project collects the {{data}} generated for {{species}}, to facilitate genome {{use}} as part of the Catalan Initiative for the Earth Biogenome Project (https://www.biogenoma.cat/).

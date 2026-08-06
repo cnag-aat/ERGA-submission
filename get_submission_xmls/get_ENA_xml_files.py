@@ -35,7 +35,10 @@ def get_studies (project, center, cname, tolid, species, sample_coordinator, stu
     description = ""
     study_name = tolid
     if study_type == "genome assembly":
-        alias = cname.replace(' ', '_') + "_genome_assembly"
+        if cname != "":
+          alias = cname.replace(' ', '_') + "_genome_assembly"
+        else:
+          alias = tolid + "_genome_assembly"
         study_title = env.get_template("assembly_title.txt").render(
             species = species,
             cname = cname,
@@ -60,6 +63,31 @@ def get_studies (project, center, cname, tolid, species, sample_coordinator, stu
             sample_coordinator = sample_coordinator,
             use = use.lower()
         )
+    elif re.search("hap", study_type):
+
+        alias = tolid + "_" + study_type.replace(' ','_')
+        study_name += ", " + study_type
+        match = re.search(r"hap(\d+)", study_type)
+        h= int(match.group(1))
+        study_title = env.get_template("haplotype_assembly_title.txt").render(
+            species = species,
+            hap = h,
+            tolid = tolid
+        )
+        if project == "CBP":
+          description_template = "cbp_haplotype_assembly_description.txt"
+        elif project == "ERGA-BGE":
+          alias = "erga-bge-" + tolid + "-" + study_type.replace(' ','-') + "-" + datetime.now().strftime('%Y-%m-%d')
+          description_template = "bge_haplotype_assembly_description.txt"     
+        else:
+            description_template = "other_haplotype_assembly_description.txt"
+        description = env.get_template(description_template).render(
+            species = species,
+            cname = cname,
+            sample_coordinator = sample_coordinator,
+            use = use,
+            hap = h
+        )   
     elif study_type == "alternate assembly":
         alt_use = use
         if alternate_annot == "no":
@@ -96,7 +124,11 @@ def get_studies (project, center, cname, tolid, species, sample_coordinator, stu
         description = "This project collects the " + study_type + " generated for " + species +\
                          " (common name " + cname + ")" 
     else:
-        alias = cname.replace(' ', '_') + '_data'
+        if cname != "":
+          alias = cname.replace(' ', '_') + "_data"
+        else:
+          alias = tolid + "_data"
+
         study_title = env.get_template("data_title.txt").render(
             species = species,
             cname = cname,
@@ -286,7 +318,8 @@ if __name__ == "__main__":
     parser.add_argument("-x", "--xml", default= 'all', nargs = "+", choices=['all', 'study', 'experiment', 'runs'], help="specify which xml files do you want")
     parser.add_argument("-o", "--out_prefix", required=True, help="prefix to add to output files")   
     parser.add_argument("-a", "--accession", required=False, help="project accession number, if already existing")
-    
+    parser.add_argument("-s", "--study_sub", default= 'all', nargs = "+", choices=['all', 'data', 'assembly'], help="specify which studies you need to create")
+  
     args = parser.parse_args()
 
     read_type_choice = ['ONT', 'Illumina', 'Hi-C', 'Hifi']
@@ -411,32 +444,49 @@ if __name__ == "__main__":
             aim = in_file["aim"][i]
             if args.project == "ERGA-BGE":
                 aim = "assembly and annotation"    
-             
+
+        alternate = ""
+        alternate_annot = "no"
+        if "alt_assembly" in in_file:
+          alternate = in_file["alt_assembly"][i] 
+        if "alt_annotation" in in_file:
+          alternate_annot =  in_file["alt_annotation"][i] 
+        
+        haps = 0
+        if "haplotypes" in in_file:
+            haps = in_file["haplotypes"][i]       
+
         study_type = {}
         #if read_type == "ONT" or read_type == "Hifi":
         study_type[tolid] = []
 
         if aim.lower() == "assembly":
-            study_type[tolid].append("genomic data")
-            study_type[tolid].append("genome assembly")
+            if 'all' in args.study_sub or 'data' in args.study_sub:
+                study_type[tolid].append("genomic data") 
+            if 'all' in args.study_sub or 'assembly' in args.study_sub:
+                if haps == 0:
+                    study_type[tolid].append("genome assembly")
         elif aim.lower() == "annotation":
-            study_type[tolid].append("transcriptomic data")
+            if 'all' in args.study_sub or 'data' in args.study_sub:
+                study_type[tolid].append("transcriptomic data")
         elif aim.lower() == "assembly and annotation":
-            study_type[tolid].append("genomic and transcriptomic data")
-            study_type[tolid].append("genome assembly")
+            if 'all' in args.study_sub or 'data' in args.study_sub:
+                study_type[tolid].append("genomic and transcriptomic data")
+            if 'all' in args.study_sub or 'assembly' in args.study_sub:
+                if haps == 0:
+                    study_type[tolid].append("genome assembly")
         elif aim.lower() == "resequencing":
             study_type[tolid].append("resequencing data")
         else:
             exit(aim + " is not and accepted aim for the project.")
-        
-        alternate = ""
-        alternate_annot = "no"
-        if "alternate" in in_file:
-          alternate = in_file["alternate"][i] 
-          if "assembly" in alternate.lower():
-              study_type[tolid].append("alternate assembly")
-          if "annotation" in alternate.lower():
-              alternate_annot = "yes"
+
+        if alternate == "yes":
+            if 'all' in args.study_sub or 'assembly' in args.study_sub:
+                study_type[tolid].append("alternate assembly")
+        if haps > 0:
+          if 'all' in args.study_sub or 'assembly' in args.study_sub:
+                for n in range(1, haps + 1):
+                    study_type[tolid].append("hap" + str(n) + " genome assembly")
 
         library_id = in_file["library_name"][i]
         add_lib = {}
@@ -446,16 +496,17 @@ if __name__ == "__main__":
             add_lib = library_attributes.replace('{','').replace('}','')
 
 
-        if read_type == library_strategy:
+        if 'all' in args.xml or 'experiment' in args.xml or 'runs' in args.xml:
+          if read_type == library_strategy:
             rname = tolid_pref + "_" + read_type + "_" + sample_id + "_" + library_id
             experiments[rname] = "exp_" + tolid_pref + "_" + library_strategy + "_" + sample_id  + "_" + library_id
-        else:
+          else:
             rname = tolid_pref + "_" + read_type + "_" + library_strategy + "_" + sample_id + "_" + library_id
             experiments[rname] = "exp_" + tolid_pref + "_" + read_type + "_" + library_strategy + "_" + sample_id + "_" + library_id
        
 
-        forward_file_name = ""
-        if "forward_file_name" in in_file and not pd.isna(in_file["forward_file_name"][i]) and not in_file["forward_file_name"][i] == "-":
+          forward_file_name = ""
+          if "forward_file_name" in in_file and not pd.isna(in_file["forward_file_name"][i]) and not in_file["forward_file_name"][i] == "-":
             forward_file_name = in_file["forward_file_name"][i]         
             if "fastq" in forward_file_name:
                 filetype[forward_file_name] = "fastq"
@@ -465,6 +516,10 @@ if __name__ == "__main__":
             elif "bam" in forward_file_name:
                 filetype[forward_file_name] = "bam"
                 fastq_run = rname + "_bam" 
+
+            elif "cram" in forward_file_name:
+                filetype[forward_file_name] = "cram"
+                fastq_run = rname + "_cram"
             
             if not fastq_run in files_run:
                 files_run[fastq_run] = []
@@ -475,8 +530,8 @@ if __name__ == "__main__":
             else:
                 md5sum[forward_file_name] = in_file["forward_file_md5"][i]
 
-        reverse_file_name = ""
-        if "reverse_file_name" in in_file and not pd.isna(in_file["reverse_file_name"][i]) and not in_file["reverse_file_name"][i] == "-":
+          reverse_file_name = ""
+          if "reverse_file_name" in in_file and not pd.isna(in_file["reverse_file_name"][i]) and not in_file["reverse_file_name"][i] == "-":
             reverse_file_name = in_file["reverse_file_name"][i]       
             if "fastq" in reverse_file_name:
                 files_reverse[forward_file_name] = reverse_file_name
@@ -486,8 +541,8 @@ if __name__ == "__main__":
                 else:
                     md5sum[reverse_file_name] = in_file["reverse_file_md5"][i]
 
-        native_file_name = ""
-        if "native_file_name" in in_file and not pd.isna(in_file["native_file_name"][i]) and not in_file["native_file_name"][i] == "-":
+          native_file_name = ""
+          if "native_file_name" in in_file and not pd.isna(in_file["native_file_name"][i]) and not in_file["native_file_name"][i] == "-":
             native_file_name = in_file["native_file_name"][i] 
             if "native_file_md5" not in in_file or pd.isna(in_file["native_file_md5"][i]) or in_file["native_file_md5"][i] == "-":
                 exit ("Missing md5 value for " + native_file_name)

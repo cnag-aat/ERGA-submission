@@ -1,1 +1,1 @@
-This project provides the genome {{use}} of {{species}}, {{cname}}. The assembly is provided by the Catalan Initiative for the Earth Biogenome Project (https://www.biogenoma.cat/).
+This project provides the genome {{use}} of {{species}}. The assembly is provided by the Catalan Initiative for the Earth Biogenome Project (https://www.biogenoma.cat/).

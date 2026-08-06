@@ -7,12 +7,14 @@ Help()
    # Display Help
    echo "This script processes a tsv file with the metadata for submission to the ENA, registers a RNA-seq virtual sample if necessary and produces xml files to submit your data."
    echo
-   echo "Syntax: submit_metadata.sh [-t arg|c arg|m arg|p arg|l arg|h]"
+   echo "Syntax: submit_metadata.sh [-t arg|c arg|m arg|p arg|l arg|s arg|x arg|h]"
    echo "options:"
    echo "-t     Input tsv file."
    echo "-c     Config yaml file with your ENA WEBIN username and password."
    echo "-m     Mode (validate or submit). Default: validate"
    echo "-a     Data project accession number, if already registered"
+   echo "-s     Type of studies that you want to register (eg. all, data, assembly). Default: all"
+   echo "-x     Xml files that you want to create (eg. all, study, experiment, runs). Default: all"
    echo "-p     Project name (eg. ERGA-BGE, CBP, EASI, ERGA-pilot, other). Default: ERGA-BGE"
    echo "-l     HiC library construction protocol. Default: Omni-C"
    echo "-h     Print this Help."
@@ -20,7 +22,7 @@ Help()
 }
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-OPTS=":t:c:m:a:p:l:h"
+OPTS=":t:c:m:a:p:s:x:l:h"
 while getopts ${OPTS} option; do
    case $option in
       t)
@@ -37,6 +39,12 @@ while getopts ${OPTS} option; do
          ;;
       p)
          PROJECT=$OPTARG
+         ;;
+      s)
+         STUDY_SUB=$OPTARG
+         ;;
+      x)
+         XML=$OPTARG
          ;;
       l) 
          HIC_LIBRARY=$OPTARG
@@ -159,17 +167,36 @@ done
 # else
 #     OXML=$IN;
 
+
+CMD="$SCRIPT_DIR/get_ENA_xml_files.py -f $OXML -o $tolid"
 if [ -z "$ACCESSION" ]; then
     if [ -z "$PROJECT" ]; then
-        >&2 echo "Running command: $SCRIPT_DIR/get_ENA_xml_files.py -f $OXML -o $tolid";
-        $SCRIPT_DIR/get_ENA_xml_files.py -f $OXML -o $tolid     
+        # >&2 echo "Running command: $SCRIPT_DIR/get_ENA_xml_files.py -f $OXML -o $tolid";
+        # $SCRIPT_DIR/get_ENA_xml_files.py -f $OXML -o $tolid    
+        CMD=$CMD 
     else
-        >&2 echo "Running command: $SCRIPT_DIR/get_ENA_xml_files.py -f $OXML -o $tolid -p $PROJECT";
-        $SCRIPT_DIR/get_ENA_xml_files.py -f $OXML -o $tolid -p $PROJECT
+        CMD="$CMD -p $PROJECT"
+        # >&2 echo "Running command: $SCRIPT_DIR/get_ENA_xml_files.py -f $OXML -o $tolid -p $PROJECT";
+        # $SCRIPT_DIR/get_ENA_xml_files.py -f $OXML -o $tolid -p $PROJECT
     fi
 else
-    >&2 echo "Running command: $SCRIPT_DIR/get_ENA_xml_files.py -f $OXML -o $tolid -a $ACCESSION -x experiment runs";
-    $SCRIPT_DIR/get_ENA_xml_files.py -f $OXML -o $tolid -a $ACCESSION -x experiment runs  
+    CMD=$CMD -x experiment runs
+#     >&2 echo "Running command: $SCRIPT_DIR/get_ENA_xml_files.py -f $OXML -o $tolid -a $ACCESSION -x experiment runs";
+#     $SCRIPT_DIR/get_ENA_xml_files.py -f $OXML -o $tolid -a $ACCESSION -x experiment runs  
 fi
+
+if [ -z "$STUDY_SUB" ]; then
+    CMD=$CMD
+else
+    CMD="$CMD -s $STUDY_SUB"
+fi 
+
+if [ -z "$XML" ]; then
+    CMD=$CMD
+else
+    CMD="$CMD -x $XML"
+fi 
+>&2 echo "Running command: $CMD";
+bash -c "$CMD"
 
 IFS=$FIFS

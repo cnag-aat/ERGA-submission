@@ -1,0 +1,1 @@
+This project provides the genome assembly of {{species}}, haplotype {{hap}}. The assembly is provided by the European Reference Genome Atlas (ERGA, https://www.erga-biodiversity.eu/) via the Biodiversity Genomics Europe project (BGE, https://biodiversitygenomics.eu/).

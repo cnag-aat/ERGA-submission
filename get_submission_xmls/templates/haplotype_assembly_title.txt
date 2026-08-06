@@ -1,0 +1,1 @@
+ {{species}}, genome assembly, {{tolid}}, hap{{hap}}. 

@@ -1,1 +1,1 @@
-{{species}} ({{cname}}), {{data}}. 
+{{species}}, {{data}}. 
