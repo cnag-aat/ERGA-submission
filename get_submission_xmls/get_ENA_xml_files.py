@@ -17,7 +17,7 @@ import pandas as pd
 
 script_loc = os.path.dirname(sys.argv[0])
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(script_loc + "/templates/"))
-print(script_loc)
+
 def get_attributes (root, parent, child, attr, **element):
     child = root.createElement(attr)
     if element:
@@ -180,12 +180,16 @@ def get_experiments (center, alias, species, read_type, instrument, study_alias,
     source = "GENOMIC"
     if library_strategy == "RNA-Seq":
         source = 'TRANSCRIPTOMIC'
-  
+    
     layout= 'PAIRED'
     model = 'ILLUMINA'
     if read_type == "ONT":
         layout = 'SINGLE'
         model = 'OXFORD_NANOPORE'
+
+    if read_type == "Hifi":
+        layout = 'SINGLE'
+        model = 'PACBIO'
 
     if 'all' in args.xml or "experiment" in args.xml:
         get_exp_xml (center, alias, exp_title,study_alias, sample_ref, lib_name, library_strategy, source, layout,  library_selection, add_lib, add_exp, model, instrument)
@@ -453,9 +457,15 @@ if __name__ == "__main__":
         forward_file_name = ""
         if "forward_file_name" in in_file and not pd.isna(in_file["forward_file_name"][i]) and not in_file["forward_file_name"][i] == "-":
             forward_file_name = in_file["forward_file_name"][i]         
-                
-            filetype[forward_file_name] = "fastq"
-            fastq_run = rname + "_fastq"
+            if "fastq" in forward_file_name:
+                filetype[forward_file_name] = "fastq"
+                fastq_run = rname + "_fastq"
+
+
+            elif "bam" in forward_file_name:
+                filetype[forward_file_name] = "bam"
+                fastq_run = rname + "_bam" 
+            
             if not fastq_run in files_run:
                 files_run[fastq_run] = []
             files_run[fastq_run].append(forward_file_name)

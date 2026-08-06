@@ -67,10 +67,7 @@ def get_xml (project, center, species, tolid_pref, description, children):
     for key in children:
       seqp = get_attributes (root,attributes, attributes,'RELATED_PROJECT')
       accessions = get_attributes (root,seqp,seqp, 'CHILD_PROJECT', **{'accession':key})
-    if args.project == "ERGA-BGE":
-      seqp = get_attributes (root,attributes, attributes,'RELATED_PROJECT')
-      accessions = get_attributes (root,seqp,seqp, 'PARENT_PROJECT', **{'accession':'PRJEB61747'})
-   
+       
   if args.project == "CBP" or project == "EASI" or project == "ERGA-BGE":
     keyword = {}
     keyword['TAG'] = "Keyword"
